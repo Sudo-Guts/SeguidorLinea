@@ -3,12 +3,14 @@
 
 .DEFAULT_GOAL := all
 
-TARGET       := SeguidorLinea
-MCU          ?= atmega328p
-F_CPU        ?= 1000000UL
-PROGRAMMER   ?= usbasp
-AVRDUDE_MCU  ?= m328p
-PORT         ?=
+TARGET        := SeguidorLinea
+MCU           ?= atmega328p
+# Reloj RC interno de 8 MHz; Clock_init() configura CLKPR al arrancar.
+# El proyecto NO escribe fusibles.
+F_CPU         ?= 8000000UL
+PROGRAMMER    ?= usbasp
+AVRDUDE_MCU   ?= m328p
+PORT          ?=
 AVRDUDE_FLAGS ?=
 
 CC       := avr-gcc
@@ -60,7 +62,6 @@ size: $(ELF)
 flash: $(HEX)
 	$(AVRDUDE) -p $(AVRDUDE_MCU) -c $(PROGRAMMER) $(if $(strip $(PORT)),-P $(PORT)) $(AVRDUDE_FLAGS) -U flash:w:$<:i
 
-# Lectura exclusivamente; NO modifica los fusibles.
 read-fuses:
 	$(AVRDUDE) -p $(AVRDUDE_MCU) -c $(PROGRAMMER) $(if $(strip $(PORT)),-P $(PORT)) $(AVRDUDE_FLAGS) \
 	  -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h

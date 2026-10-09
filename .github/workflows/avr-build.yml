@@ -1,0 +1,24 @@
+name: AVR build
+
+on:
+  push:
+    branches: [main, chore/etapa-1-toolchain, feat/etapa-2-drivers]
+  pull_request:
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install AVR toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-avr avr-libc binutils-avr make
+      - name: Build with internal RC clock at 8 MHz
+        run: |
+          make -C C0DE clean
+          make -C C0DE F_CPU=8000000UL
+      - name: Build compatibility configuration at 1 MHz
+        run: |
+          make -C C0DE clean
+          make -C C0DE F_CPU=1000000UL
