@@ -1,24 +1,28 @@
-# Hardware: inventario preliminar
+# Hardware: inventario de pines y supuestos
 
-**Configuracion presunta:** ATmega328P con `F_CPU=1 MHz`. No se ha comprobado la placa, el encapsulado, el reloj real ni los fusibles. Esta tabla refleja las definiciones existentes y NO es un esquema electrico validado.
+**Microcontrolador objetivo:** ATmega328P. El firmware supone oscilador RC interno nominal de 8 MHz y configura `CLKPR` a divisor 1 antes de inicializar perifericos.
 
-| Funcion | Pin AVR indicado en el codigo | Archivo |
+Esta tabla refleja el cableado supuesto por las macros, no sustituye el esquematico electrico.
+
+| Funcion | Pin AVR | Canal o periferico |
 | --- | --- | --- |
-| QTR ADC0..ADC5 (6 sensores) | PC0..PC5 | `QTR_Sensors.c` |
-| Habilitacion emisores IR | PB6 | `QTR_Sensors.h` |
-| Motor A IN1 / IN2 | PB7 / PB0 | `Motor.h` |
-| Motor B IN1 / IN2 | PB4 / PB3 | `Motor.h` |
-| Motor A PWM (declarado OC1A) | PB2 | `Motor.h` |
-| Motor B PWM (declarado OC1B) | PB1 | `Motor.h` |
-| Driver STBY | PB5 | `Motor.h` |
-| UART RX0 / TX0 | PD0 / PD1 | `HC_05.c` |
+| QTR 0..5 | PC0..PC5 | ADC0..ADC5 |
+| Emisores infrarrojos QTR | PB6 | GPIO, control activo-alto supuesto |
+| Motor A IN1 / IN2 | PB7 / PB0 | GPIO |
+| Motor B IN1 / IN2 | PB4 / PB3 | GPIO |
+| Motor A PWM | PB2 | **OC1B / OCR1B** |
+| Motor B PWM | PB1 | **OC1A / OCR1A** |
+| Driver STBY | PB5 | GPIO |
+| HC-05 RX0 / TX0 | PD0 / PD1 | USART0 |
 
-## Verificaciones obligatorias antes de la etapa de drivers
+## Antes de energizar los motores
 
-1. **PWM:** en ATmega328P, OC1A corresponde a PB1 y OC1B a PB2. Las macros actuales parecen invertidas. No se modificaron sin confirmar el cableado.
-2. **Reloj:** PB6 y PB7 tambien son XTAL1/XTAL2. Si se utiliza un oscilador externo en estos pines, no pueden operar simultaneamente como las E/S indicadas.
-3. **ISP:** PB3, PB4 y PB5 comparten funciones con MOSI, MISO y SCK; verificar que la etapa de potencia permanezca deshabilitada al programar.
-4. **Frecuencia/fusibles:** verificar hardware real antes de cambiar `F_CPU` o programar el microcontrolador.
-5. **Driver de motores:** identificar el modelo exacto y comprobar su conexion al AVR.
+1. Verificar fisicamente el cableado de PB2 (Motor A) y PB1 (Motor B). Se corrigio el **registro OCR de cada motor**, no el pin fisico.
+2. Confirmar la fuente de reloj por fusibles: PB6 y PB7 solo pueden actuar como GPIO si estan libres de cristal/oscilador externo.
+3. Confirmar el modelo del puente H y su tabla de verdad: `STBY`, `COAST` y `BRAKE` pueden variar segun el circuito.
+4. Confirmar tension de alimentacion y niveles logicos, especialmente en RX del HC-05.
+5. PB3, PB4 y PB5 se comparten con las seniales de programacion ISP; asegurar que el circuito de potencia no interfiera con el programador.
+6. Verificar que sensores QTR sean analogicos y que el control de emisores sea compatible con el pin PB6.
+7. Iniciar pruebas con ruedas elevadas y posibilidad de desconectar la alimentacion de motores.
 
-Esta etapa no modifica las asignaciones fisicas ni los fusibles.
+No se alteran fusibles ni conexiones fisicas desde el firmware. Para pruebas individuales, ver [DRIVERS.md](DRIVERS.md).
