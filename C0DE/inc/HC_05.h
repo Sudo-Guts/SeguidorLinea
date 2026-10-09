@@ -4,8 +4,7 @@
 #include <stdint.h>
 
 // ======================== CONFIGURACIÓN ========================
-// Frecuencia del CPU (1 MHz por defecto, cámbiala si es necesario)
-#define F_CPU 1000000UL
+// F_CPU se define desde C0DE/Makefile para todos los modulos.
 
 // ======================== FUNCIONES ========================
 
@@ -60,7 +59,7 @@ void hc05_enable_rx_interrupt(void);
 
 /**
  * @brief Último carácter recibido por interrupción.
- *        Se actualiza en la ISR (debe definirse en main.c).
+ *        Se actualiza en la ISR (se define en src/HC_05.c).
  */
 extern volatile char hc05_last_rx;
 

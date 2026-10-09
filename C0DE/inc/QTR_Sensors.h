@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-#define F_CPU 1000000UL  // 1 MHz
 
 
 #define QTR_NUM_SENSORS     6
