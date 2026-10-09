@@ -1,0 +1,6 @@
+# Artefactos generados por AVR-GCC en el directorio de salida.
+C0DE/out/*
+!C0DE/out/out.txt
+
+# Indice opcional de herramientas de desarrollo.
+C0DE/compile_commands.json

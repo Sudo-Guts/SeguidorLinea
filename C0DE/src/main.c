@@ -9,8 +9,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "qtr_sensors.h"
-#include "motor.h"
+#include "QTR_Sensors.h"
+#include "Motor.h"
 #include "HC_05.h"
 
 #define VBASE         750
